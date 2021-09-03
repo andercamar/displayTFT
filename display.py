@@ -87,6 +87,7 @@ def main():
     now = getDate()
     weather = getWeather()
     spotify = getSpotify()
+    showDisplay()
 
 if __name__ == '__main__':
     main()
