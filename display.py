@@ -58,6 +58,31 @@ def getSpotify():
     else:
         return False
 
+def showDisplay():
+    WIDTH = 128
+    HEIGHT = 160
+    SPEED_HZ = 4000000
+
+    DC = 24
+    RST = 25
+    SPI_PORT = 0
+    SPI_DEVIDE = 0
+
+    disp = TFT.ST7735(
+        DC,
+        rst=RST,
+        spi=SPI.SpiDev(
+            SPI_PORT,
+            SPI_DEVIDE,
+            max_speed_hz=SPEED_HZ))
+        
+    disp.begin()
+    disp.clear((32,32,32))
+
+    draw = disp.draw()
+    font=ImageFont.load_default()
+    draw.text((0,0), "TESTE",(255,255,255),font=font)
+
 def main():
     now = getDate()
     weather = getWeather()
