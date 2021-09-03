@@ -1,12 +1,16 @@
 from config import configWeather
 from config import configSpotify
-from datetime import date
 from datetime import datetime
+import requests
+import time
+
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-import requests
-import json
+
+import ST7735 as TFT
+import Adafruit_GPIO as GPIO
+import Adafruit_GPIO.SPI as SPI
 
 def getDate():
     now = datetime.now()
