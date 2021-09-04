@@ -83,6 +83,8 @@ def showDisplay():
     font=ImageFont.load_default()
     draw.text((0,0), "TESTE",(255,255,255),font=font)
 
+    disp.display()
+
 def main():
     now = getDate()
     weather = getWeather()
