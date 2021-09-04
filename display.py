@@ -1,12 +1,9 @@
-from config import configWeather
-from config import configSpotify
+from config import configWeather,configSpotify
 from datetime import datetime
 import requests
 import time
 
-from PIL import Image
-from PIL import ImageDraw
-from PIL import ImageFont
+from PIL import Image,ImageDraw,ImageFont
 
 import ST7735 as TFT
 import Adafruit_GPIO as GPIO
@@ -58,6 +55,15 @@ def getSpotify():
     else:
         return False
 
+def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
+    draw=ImageDraw.Draw(image)
+    width,height = draw.textsize(text, font=font)
+    textimage = Image.new('RGBA',(width,height),(0,0,0,0))
+    textdraw = ImageDraw.Draw(textimage)
+    textdraw.text((0,0),text,font=font,fill=fill)
+    rotated = textimage.rotate(angle,expand=1)
+    image.paste(rotated,position,rotated)
+
 def showDisplay():
     WIDTH = 128
     HEIGHT = 160
@@ -77,11 +83,11 @@ def showDisplay():
             max_speed_hz=SPEED_HZ))
         
     disp.begin()
-    disp.clear((32,32,32))
+    disp.clear((255,0,0))
 
     draw = disp.draw()
     font=ImageFont.load_default()
-    draw.text((0,0), "TESTE",(255,255,255),font=font)
+    drawRotatedText(disp.buffer,"TESTE",(110,36),270,font,fill=(255,255,255))
 
     disp.display()
 
