@@ -99,9 +99,8 @@ def showWeather(disp,weather):
     print(weather['temp'])
     clearDisplay(disp)
     font=ImageFont.truetype('fonts/Arial.ttf',40)
-    drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(64,80),270,font,fill=(255,255,255))
+    drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(32,80),270,font,fill=(255,255,255))
     disp.display()
-
 
 def main():
     disp = createDisplay()
