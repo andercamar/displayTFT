@@ -120,8 +120,8 @@ def showSpotify(disp):
 
 def main():
     iddleTime = 5
+    disp = createDisplay()
     while True:
-        disp = createDisplay()
         showDate(disp)
         time.sleep(1)
         showWeather(disp)
