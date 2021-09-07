@@ -91,11 +91,10 @@ def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
 
 def showDisplay():
     disp = createDisplay()
-    clearDisplay(disp)
+    # clearDisplay(disp)
     
-
     font=ImageFont.load_default()
-    drawRotatedText(disp.buffer,"TESTE",(110,36),270,font,fill=(255,255,255))
+    drawRotatedText(disp.buffer,"TESTE2",(110,36),270,font,fill=(255,255,255))
 
     disp.display()
 
@@ -105,8 +104,8 @@ def main():
     # spotify = getSpotify()
     showDisplay()
     time.sleep(5)
-    disp = createDisplay()
-    clearDisplay(disp)
+    # disp = createDisplay()
+    # clearDisplay(disp)
 
 if __name__ == '__main__':
     main()
