@@ -73,9 +73,13 @@ def createDisplay():
             SPI_PORT,
             SPI_DEVIDE,
             max_speed_hz=SPEED_HZ))
-
+    
+    disp.begin()
     return disp
 
+def clearDisplay(disp):
+    disp.clear((32,32,32))
+    disp.display()
 
 def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
     draw=ImageDraw.Draw(image)
@@ -88,9 +92,8 @@ def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
 
 def showDisplay():
     disp = createDisplay()
-        
-    disp.begin()
-    disp.clear((32,32,32))
+    clearDisplay(disp)
+    
 
     font=ImageFont.load_default()
     drawRotatedText(disp.buffer,"TESTE",(110,36),270,font,fill=(255,255,255))
@@ -102,6 +105,9 @@ def main():
     # weather = getWeather()
     # spotify = getSpotify()
     showDisplay()
+    time.sleep(5)
+    disp = createDisplay()
+    clearDisplay(disp)
 
 if __name__ == '__main__':
     main()
