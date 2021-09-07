@@ -40,6 +40,7 @@ def getSpotify():
             "Authorization": f"Bearer {token}"
         }
     )
+    print(response.status_code)
     if response.status_code == 200:
         json_resp = response.json()
         artists = [artist for artist in json_resp['item']['artists']]
