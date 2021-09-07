@@ -81,14 +81,20 @@ def showDisplay():
             SPI_PORT,
             SPI_DEVIDE,
             max_speed_hz=SPEED_HZ))
-        
     disp.begin()
-    disp.clear((255,0,0))
-
+    disp.clear((32,32,32))
     draw = disp.draw()
-    font=ImageFont.load_default()
-    drawRotatedText(disp.buffer,"TESTE",(110,36),270,font,fill=(255,255,255))
+    draw.ellipse((0, 0, 16, 16), outline=(0,0,255), fill=(0,0,96))
+    draw.ellipse((0, 144, 16, 159), outline=(0,0,255), fill=(0,0,96))
+    draw.ellipse((112, 0, 127, 16), outline=(0,0,255), fill=(0,0,96))
+    draw.ellipse((112, 144, 127, 159), outline=(0,0,255), fill=(0,0,96))
+    draw.ellipse((32, 48, 96, 112), outline=(255, 0, 0), fill=(64,0,0))
+    draw.polygon((96, 80, 48, 108, 48, 52), outline=(255,255,255))
+    draw.rectangle((104,30,124,134), outline=(64,64,64), fill=(0, 192, 0))
 
+    font=ImageFont.load_default()
+
+    drawRotatedText(disp.buffer,"TESTE",(110,36),270,font,fill=(255,255,255))
     disp.display()
 
 def main():
