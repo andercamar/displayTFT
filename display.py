@@ -95,6 +95,17 @@ def showDisplay(disp):
     drawRotatedText(disp.buffer,"TESTE2",(110,36),270,font,fill=(255,255,255))
     disp.display()
 
+def showDate(disp,now):
+    print(now)
+    clearDisplay(disp)
+    font=ImageFont.truetype('fonts/Arial.ttf',15)
+    drawRotatedText(disp.buffer,"Hora:",(100,40),270,font,fill=(255,255,255))
+    drawRotatedText(disp.buffer,str(now['nowDate']),(30,40),270,font,fill=(255,255,255))
+    font=ImageFont.truetype('fonts/Arial.ttf',30)
+    drawRotatedText(disp.buffer,str(now['nowHour']),(60,30),270,font,fill=(255,255,255))
+    disp.display()
+
+
 def showWeather(disp,weather):
     print(weather['temp'])
     clearDisplay(disp)
@@ -107,12 +118,14 @@ def showWeather(disp,weather):
 
 def main():
     disp = createDisplay()
-    # now = getDate()
+    now = getDate()
     weather = getWeather()
     # spotify = getSpotify()
     showDisplay(disp)
     time.sleep(1)
     showWeather(disp,weather)
+    time.sleep(1)
+    showDate(disp,now)
     # disp = createDisplay()
     # clearDisplay(disp)
 
