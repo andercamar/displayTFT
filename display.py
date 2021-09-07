@@ -111,12 +111,12 @@ def showSpotify(disp):
     if spotify:
         print(spotify)
         clearDisplay(disp)
-        font=ImageFont.truetype('fonts/Arial.ttf',15)
-        drawRotatedText(disp.buffer,str(spotify['artists']),(100,10),270,font,fill=(255,255,255))
-        font=ImageFont.truetype('fonts/Arial.ttf',20)
-        for x in range(160,5,-5):
+        font1=ImageFont.truetype('fonts/Arial.ttf',15)
+        font2=ImageFont.truetype('fonts/Arial.ttf',20)
+        for x in range(160,0,-5):
             clearDisplay(disp)
-            drawRotatedText(disp.buffer,str(spotify['music']),(60,x),270,font,fill=(255,255,255))
+            drawRotatedText(disp.buffer,str(spotify['artists']),(100,10),270,font1,fill=(255,255,255))
+            drawRotatedText(disp.buffer,str(spotify['music']),(60,x),270,font2,fill=(255,255,255))
             disp.display()
 
 def main():
@@ -128,7 +128,6 @@ def main():
         showWeather(disp)
         time.sleep(iddleTime)
         showSpotify(disp)
-        time.sleep(iddleTime)
         # disp = createDisplay()
         # clearDisplay(disp)
 
