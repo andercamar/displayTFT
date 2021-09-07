@@ -26,9 +26,8 @@ def getWeather():
     json_resp = response.json()
     temp = json_resp['current']['temp']
     feels = json_resp['current']['feels_like']
-    weather = json_resp['current']['weather']
-    for x in json_resp['current']['weather']:
-        print(x)
+    weather = ', '.join([x['description'] for x in json_resp['current']['weather']])
+    print(weather)
     data = {
         "temp":temp,
         "feels":feels
@@ -44,6 +43,7 @@ def getSpotify():
             "Authorization": f"Bearer {token}"
         }
     )
+    print(response.status_code)
     if response.status_code == 200:
         json_resp = response.json()
         artists = [artist for artist in json_resp['item']['artists']]
