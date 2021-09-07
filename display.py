@@ -26,7 +26,8 @@ def getWeather():
     json_resp = response.json()
     temp = json_resp['current']['temp']
     feels = json_resp['current']['feels_like']
-    print(json_resp['current'])
+    weather = json_resp['current']['wheather']
+    print(json_resp['current']['wheather'])
     data = {
         "temp":temp,
         "feels":feels
