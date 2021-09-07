@@ -135,7 +135,7 @@ def main():
         showDate(disp)
         showWeather(disp)
         time.sleep(iddleTime)
-        teste()
+        teste(disp)
         time.sleep(iddleTime)
         # showSpotify(disp)
 
