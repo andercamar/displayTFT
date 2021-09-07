@@ -91,15 +91,15 @@ def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
 
 def showDisplay(disp):
     clearDisplay(disp)
-    font=ImageFont.load_default()
+    font=ImageFont.truetype('fonts/Arial.ttf',20)
     drawRotatedText(disp.buffer,"TESTE2",(110,36),270,font,fill=(255,255,255))
     disp.display()
 
 def showWeather(disp,weather):
     print(weather['temp'])
     clearDisplay(disp)
-    font=ImageFont.load_default()
-    drawRotatedText(disp.buffer,str(weather['temp']),(64,80),270,font,fill=(255,255,255))
+    font=ImageFont.truetype('fonts/Arial.ttf',20)
+    drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(64,80),270,font,fill=(255,255,255))
     disp.display()
 
 
