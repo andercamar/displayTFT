@@ -78,7 +78,7 @@ def createDisplay():
     return disp
 
 def clearDisplay(disp):
-    disp.clear((32,32,32))
+    disp.clear((0,0,0))
 
 def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
     draw=ImageDraw.Draw(image)
@@ -92,11 +92,13 @@ def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
 def showDisplay():
     disp = createDisplay()
     # clearDisplay(disp)
-    
     font=ImageFont.load_default()
     drawRotatedText(disp.buffer,"TESTE2",(110,36),270,font,fill=(255,255,255))
-
     disp.display()
+
+def showWeather(disp,now,weather):
+    pass
+
 
 def main():
     # now = getDate()
