@@ -79,7 +79,6 @@ def createDisplay():
 
 def clearDisplay(disp):
     disp.clear((32,32,32))
-    disp.display()
 
 def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
     draw=ImageDraw.Draw(image)
