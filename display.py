@@ -40,7 +40,6 @@ def getSpotify():
             "Authorization": f"Bearer {token}"
         }
     )
-    print(response.status_code)
     if response.status_code == 200:
         json_resp = response.json()
         artists = [artist for artist in json_resp['item']['artists']]
@@ -120,7 +119,7 @@ def showSpotify(disp,spotify):
     clearDisplay(disp)
     font=ImageFont.truetype('fonts/Arial.ttf',15)
     drawRotatedText(disp.buffer,"Spotify:",(100,40),270,font,fill=(255,255,255))
-    font=ImageFont.truetype('fonts/Arial.ttf',30)
+    font=ImageFont.truetype('fonts/Arial.ttf',15)
     drawRotatedText(disp.buffer,str(spotify['music']),(60,0),270,font,fill=(255,255,255))
     disp.display()
 
