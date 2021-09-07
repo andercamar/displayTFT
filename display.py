@@ -98,7 +98,7 @@ def showDisplay(disp):
 def showWeather(disp,weather):
     print(weather['temp'])
     clearDisplay(disp)
-    font=ImageFont.truetype('fonts/Arial.ttf',40)
+    font=ImageFont.truetype('fonts/Arial.ttf',30)
     drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(64,20),270,font,fill=(255,255,255))
     disp.display()
 
@@ -109,7 +109,7 @@ def main():
     weather = getWeather()
     # spotify = getSpotify()
     showDisplay(disp)
-    time.sleep(5)
+    time.sleep(1)
     showWeather(disp,weather)
     # disp = createDisplay()
     # clearDisplay(disp)
