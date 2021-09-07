@@ -114,9 +114,9 @@ def showSpotify(disp):
         font=ImageFont.truetype('fonts/Arial.ttf',15)
         drawRotatedText(disp.buffer,str(spotify['artists']),(100,10),270,font,fill=(255,255,255))
         font=ImageFont.truetype('fonts/Arial.ttf',20)
-        drawRotatedText(disp.buffer,str(spotify['music']),(60,10),270,font,fill=(255,255,255))
-        disp.display()
-
+        for x in range(160,5,-5):
+            drawRotatedText(disp.buffer,str(spotify['music']),(60,x),270,font,fill=(255,255,255))
+            disp.display()
 
 def main():
     iddleTime = 5
