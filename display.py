@@ -27,10 +27,10 @@ def getWeather():
     temp = json_resp['current']['temp']
     feels = json_resp['current']['feels_like']
     weather = ', '.join([x['description'] for x in json_resp['current']['weather']])
-    print(weather)
     data = {
         "temp":temp,
-        "feels":feels
+        "feels":feels,
+        "weather":weather
     }
     return data
 
@@ -43,7 +43,6 @@ def getSpotify():
             "Authorization": f"Bearer {token}"
         }
     )
-    print(response.status_code)
     if response.status_code == 200:
         json_resp = response.json()
         artists = [artist for artist in json_resp['item']['artists']]
@@ -106,6 +105,7 @@ def showWeather(disp):
     weather = getWeather()
     font=ImageFont.truetype('fonts/Arial.ttf',15)
     drawRotatedText(disp.buffer,"Temperatura:",(100,40),270,font,fill=(255,255,255))
+    drawRotatedText(disp.buffer,str(weather['weather']),(30,40),270,font,fill=(255,255,255))
     font=ImageFont.truetype('fonts/Arial.ttf',30)
     drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(60,30),270,font,fill=(255,255,255))
     disp.display()
@@ -129,9 +129,7 @@ def main():
         showDate(disp)
         showWeather(disp)
         time.sleep(iddleTime)
-        showSpotify(disp)
-        # disp = createDisplay()
-        # clearDisplay(disp)
+        # showSpotify(disp)
 
 if __name__ == '__main__':
     main()
