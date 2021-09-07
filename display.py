@@ -118,9 +118,9 @@ def showSpotify(disp,spotify):
     print(spotify)
     clearDisplay(disp)
     font=ImageFont.truetype('fonts/Arial.ttf',15)
-    drawRotatedText(disp.buffer,"Spotify:",(100,40),270,font,fill=(255,255,255))
-    font=ImageFont.truetype('fonts/Arial.ttf',15)
-    drawRotatedText(disp.buffer,str(spotify['music']),(60,0),270,font,fill=(255,255,255))
+    drawRotatedText(disp.buffer,str(spotify['artists']),(100,10),270,font,fill=(255,255,255))
+    font=ImageFont.truetype('fonts/Arial.ttf',20)
+    drawRotatedText(disp.buffer,str(spotify['music']),(60,10),270,font,fill=(255,255,255))
     disp.display()
 
 
