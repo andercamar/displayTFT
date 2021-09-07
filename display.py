@@ -26,6 +26,7 @@ def getWeather():
     json_resp = response.json()
     temp = json_resp['current']['temp']
     feels = json_resp['current']['feels_like']
+    print(json_resp)
     data = {
         "temp":temp,
         "feels":feels
@@ -94,7 +95,7 @@ def showDate(disp):
         clearDisplay(disp)
         drawRotatedText(disp.buffer,"Hora:",(100,40),270,font1,fill=(255,255,255))
         drawRotatedText(disp.buffer,str(now['nowDate']),(30,40),270,font1,fill=(255,255,255))
-        drawRotatedText(disp.buffer,str(now['nowHour']),(60,15),270,font2,fill=(255,255,255))
+        drawRotatedText(disp.buffer,str(now['nowHour']),(60,20),270,font2,fill=(255,255,255))
         disp.display()
         time.sleep(1)
 
