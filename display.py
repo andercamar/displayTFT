@@ -55,16 +55,8 @@ def getSpotify():
     else:
         return False
 
-def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
-    draw=ImageDraw.Draw(image)
-    width,height = draw.textsize(text, font=font)
-    textimage = Image.new('RGBA',(width,height),(0,0,0,0))
-    textdraw = ImageDraw.Draw(textimage)
-    textdraw.text((0,0),text,font=font,fill=fill)
-    rotated = textimage.rotate(angle,expand=1)
-    image.paste(rotated,position,rotated)
 
-def showDisplay():
+def createDisplay():
     WIDTH = 128
     HEIGHT = 160
     SPEED_HZ = 4000000
@@ -81,20 +73,34 @@ def showDisplay():
             SPI_PORT,
             SPI_DEVIDE,
             max_speed_hz=SPEED_HZ))
+
+    return disp
+
+
+def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
+    draw=ImageDraw.Draw(image)
+    width,height = draw.textsize(text, font=font)
+    textimage = Image.new('RGBA',(width,height),(0,0,0,0))
+    textdraw = ImageDraw.Draw(textimage)
+    textdraw.text((0,0),text,font=font,fill=fill)
+    rotated = textimage.rotate(angle,expand=1)
+    image.paste(rotated,position,rotated)
+
+def showDisplay():
+    disp = createDisplay()
         
     disp.begin()
     disp.clear((32,32,32))
 
-    draw = disp.draw()
     font=ImageFont.load_default()
     drawRotatedText(disp.buffer,"TESTE",(110,36),270,font,fill=(255,255,255))
 
     disp.display()
 
 def main():
-    now = getDate()
-    weather = getWeather()
-    spotify = getSpotify()
+    # now = getDate()
+    # weather = getWeather()
+    # spotify = getSpotify()
     showDisplay()
 
 if __name__ == '__main__':
