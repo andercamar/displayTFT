@@ -89,23 +89,26 @@ def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
     rotated = textimage.rotate(angle,expand=1)
     image.paste(rotated,position,rotated)
 
-def showDisplay():
-    disp = createDisplay()
-    # clearDisplay(disp)
+def showDisplay(disp):
+    clearDisplay(disp)
     font=ImageFont.load_default()
     drawRotatedText(disp.buffer,"TESTE2",(110,36),270,font,fill=(255,255,255))
     disp.display()
 
-def showWeather(disp,now,weather):
-    pass
+def showWeather(disp,weather):
+    clearDisplay(disp)
+    font=ImageFont.load_default()
+    drawRotatedText(disp.buffer,weather['temp'],(64,80),270,font,fill=(255,255,255))
 
 
 def main():
+    disp = createDisplay()
     # now = getDate()
-    # weather = getWeather()
+    weather = getWeather()
     # spotify = getSpotify()
-    showDisplay()
+    showDisplay(disp)
     time.sleep(5)
+    showWeather(disp,weather)
     # disp = createDisplay()
     # clearDisplay(disp)
 
