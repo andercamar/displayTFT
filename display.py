@@ -122,12 +122,20 @@ def showSpotify(disp):
             drawRotatedText(disp.buffer,str(spotify['music']),(60,x),270,font2,fill=(255,255,255))
             disp.display()
 
+def teste(disp):
+    clearDisplay(disp)
+    draw = disp.draw()
+    draw.line((100,200,150,300), fill=128)
+    disp.display()
+
 def main():
     iddleTime = 5
     disp = createDisplay()
     while True:
         showDate(disp)
         showWeather(disp)
+        time.sleep(iddleTime)
+        teste()
         time.sleep(iddleTime)
         # showSpotify(disp)
 
