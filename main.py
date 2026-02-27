@@ -46,15 +46,15 @@ class DashboardApp:
         self.display.clear()
         
         # Topo: Dia da Semana
-        self.display.draw_text_centered(day_str, 20, self.font_path, 14, fill=(255, 200, 50))
-        self.display.draw_line(40)
+        self.display.draw_text_centered(day_str, 15, self.font_path, 12, fill=(255, 200, 50))
+        self.display.draw_line(35)
         
         # Centro: Hora
-        self.display.draw_text_centered(time_str, 55, self.font_path, 48, fill=(255, 255, 255))
+        self.display.draw_text_centered(time_str, 50, self.font_path, 38, fill=(255, 255, 255))
         
         # Rodapé: Data com Linha
-        self.display.draw_line(125)
-        self.display.draw_text_centered(date_str, 135, self.font_path, 16, fill=(180, 180, 180))
+        self.display.draw_line(120)
+        self.display.draw_text_centered(date_str, 130, self.font_path, 14, fill=(180, 180, 180))
         
         self.display.display()
 
@@ -74,36 +74,35 @@ class DashboardApp:
         if icon_id:
             icon_img = self.get_weather_icon(icon_id)
             if icon_img:
-                self.display.draw_image(icon_img, (-1, 5), size=(50, 50))
+                self.display.draw_image(icon_img, (-1, 5), size=(40, 40))
 
         # Temperatura
-        self.display.draw_text_centered(f"{int(temp)}°C", 55, self.font_path, 52, fill=color)
+        self.display.draw_text_centered(f"{int(temp)}°C", 50, self.font_path, 40, fill=color)
         
         # Descrição e Sensação
-        self.display.draw_text_centered(desc, 115, self.font_path, 14, fill=(255, 255, 255))
-        self.display.draw_line(135)
-        self.display.draw_text_centered(f"SENTE: {int(self.weather_data.get('feels', 0))}°C", 142, self.font_path, 11, fill=(150, 150, 150))
+        self.display.draw_text_centered(desc, 105, self.font_path, 12, fill=(255, 255, 255))
+        self.display.draw_line(125)
+        self.display.draw_text_centered(f"SENS: {int(self.weather_data.get('feels', 0))}°C", 135, self.font_path, 10, fill=(150, 150, 150))
         
         self.display.display()
 
     def render_spotify(self, spotify):
         self.display.clear()
         
-        # Logo Spotify (Placeholder visual: Vamos desenhar um círculo verde simples já que não temos o PNG)
-        # Se você tiver spotify_logo.png, usaria: self.display.draw_image('spotify.png', (-1, 10), size=(30, 30))
-        self.display.draw_text_centered("SPOTIFY", 15, self.font_path, 14, fill=(30, 215, 96))
+        self.display.draw_text_centered("SPOTIFY", 10, self.font_path, 12, fill=(30, 215, 96))
         
-        # Música
-        self.display.draw_text_centered(spotify['music'][:15], 50, self.font_path, 18, fill=(255, 255, 255))
+        # Música (Ainda mais truncado e fonte menor: 14)
+        music_name = spotify['music'][:11] + ".." if len(spotify['music']) > 11 else spotify['music']
+        self.display.draw_text_centered(music_name, 45, self.font_path, 14, fill=(255, 255, 255))
         
-        # Artista
-        self.display.draw_text_centered(spotify['artists'][:20], 80, self.font_path, 14, fill=(180, 180, 180))
+        # Artista (Truncado e fonte menor: 11)
+        artist_name = spotify['artists'][:15] + ".." if len(spotify['artists']) > 15 else spotify['artists']
+        self.display.draw_text_centered(artist_name, 72, self.font_path, 11, fill=(180, 180, 180))
         
         # Barra de Progresso
-        self.display.draw_progress_bar(0.65, 115)
+        self.display.draw_progress_bar(0.65, 110)
         
-        # Nota musical visual (Emoji ou texto estilizado)
-        self.display.draw_text_centered("♪ OUVINDO ♪", 140, self.font_path, 10, fill=(100, 100, 100))
+        self.display.draw_text_centered("♪ OUVINDO ♪", 135, self.font_path, 9, fill=(100, 100, 100))
         
         self.display.display()
 

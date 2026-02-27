@@ -1,7 +1,6 @@
 requests
 pillow
 python-dotenv
-# Dependências de Hardware (Instalar apenas no Raspberry Pi)
-# RPi.GPIO
-# adafruit-blinka
-# adafruit-circuitpython-st7735
+RPi.GPIO
+adafruit-blinka
+adafruit-circuitpython-rgb-display
