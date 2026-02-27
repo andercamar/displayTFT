@@ -11,13 +11,19 @@ class Config:
     LONG = os.getenv("LONG", "-46.6333")
 
     # Spotify
-    SPOTIFY_TOKEN = os.getenv("SPOTIFY_TOKEN")
+    SPOTIFY_CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
+    SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
+    SPOTIFY_REFRESH_TOKEN = os.getenv("SPOTIFY_REFRESH_TOKEN")
+    SPOTIFY_TOKEN = os.getenv("SPOTIFY_TOKEN") # Fallback/Initial
 
     # Printer Settings (OctoPrint / Moonraker)
     PRINTER_API_KEY = os.getenv("PRINTER_API_KEY")
     PRINTER_URL = os.getenv("PRINTER_URL", "http://octopi.local") # Ou IP da impressora
     PRINTER_TYPE = os.getenv("PRINTER_TYPE", "octoprint") # octoprint ou moonraker
 
+    
+    # Hardware settings
+    DEBUG_MODE = os.getenv("DEBUG_MODE", "True").lower() == "true"
     
     # TFT Pins (Padrão Raspberry Pi)
     TFT_DC = 24

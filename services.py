@@ -20,23 +20,61 @@ class WeatherService:
             temp = json_resp['main']['temp']
             feels = json_resp['main']['feels_like']
             weather = json_resp['weather'][0]['description']
+            icon_id = json_resp['weather'][0]['icon']
             
             return {
                 "temp": temp,
                 "feels": feels,
-                "weather": weather
+                "weather": weather,
+                "icon_id": icon_id
             }
         except Exception as e:
             print(f"Erro ao buscar clima: {e}")
             return {"temp": "Erro", "feels": "Erro", "weather": "Erro de Conexão"}
 
+import base64
+
 class SpotifyService:
     def __init__(self):
         self.token = Config.SPOTIFY_TOKEN
+        self.client_id = Config.SPOTIFY_CLIENT_ID
+        self.client_secret = Config.SPOTIFY_CLIENT_SECRET
+        self.refresh_token = Config.SPOTIFY_REFRESH_TOKEN
+
+    def refresh_access_token(self):
+        """Usa o refresh_token para conseguir um novo access_token (dura 1h)."""
+        if not self.refresh_token or not self.client_id or not self.client_secret:
+            return False
+            
+        url = "https://accounts.spotify.com/api/token"
+        auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
+        
+        payload = {
+            "grant_type": "refresh_token",
+            "refresh_token": self.refresh_token
+        }
+        headers = {
+            "Authorization": f"Basic {auth_header}",
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        
+        try:
+            response = requests.post(url, data=payload, headers=headers)
+            if response.status_code == 200:
+                new_token = response.json().get('access_token')
+                self.token = new_token
+                print("Token do Spotify renovado com sucesso.")
+                return True
+            return False
+        except Exception as e:
+            print(f"Erro ao renovar token: {e}")
+            return False
 
     def get_playing(self):
         if not self.token:
-            return None
+            # Tenta renovar se não houver token inicial mas houver refresh_token
+            if not self.refresh_access_token():
+                return None
         
         link = "https://api.spotify.com/v1/me/player/currently-playing"
         try:
@@ -46,6 +84,12 @@ class SpotifyService:
                 timeout=5
             )
             
+            # Se o token expirou (401), renova e tenta de novo UMA vez
+            if response.status_code == 401:
+                if self.refresh_access_token():
+                    return self.get_playing()
+                return None
+
             if response.status_code == 200:
                 json_resp = response.json()
                 if not json_resp.get('item'):
@@ -61,6 +105,11 @@ class SpotifyService:
                     "music": music,
                     "playing": playing
                 }
+            return None
+        except Exception as e:
+            print(f"Erro ao buscar Spotify: {e}")
+            return None
+
 class PrinterService:
     def __init__(self):
         self.api_key = Config.PRINTER_API_KEY # Opcional no Moonraker

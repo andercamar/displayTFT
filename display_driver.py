@@ -46,14 +46,16 @@ class DisplayDriver:
         else:
             self.disp.display(self.buffer)
 
-    def draw_text_centered(self, text, y_pos, font_path, font_size, fill=(255, 255, 255), rotation=270):
+    def draw_text_centered(self, text, y_pos, font_path, font_size, fill=(255, 255, 255), rotation=0):
         try:
             font = ImageFont.truetype(font_path, font_size)
         except IOError:
             font = ImageFont.load_default()
 
         # Criar imagem temporária para o texto
-        draw_temp = ImageDraw.Draw(Image.new('RGBA', (self.width, self.height)))
+        # Usamos um tamanho maior para garantir que o texto caiba antes da rotação
+        text_img_temp = Image.new('RGBA', (self.width * 2, self.height), (0, 0, 0, 0))
+        draw_temp = ImageDraw.Draw(text_img_temp)
         bbox = draw_temp.textbbox((0, 0), text, font=font)
         w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
 
@@ -64,9 +66,37 @@ class DisplayDriver:
         rotated = text_img.rotate(rotation, expand=1)
         rw, rh = rotated.size
         
-        # Centraliza horizontalmente (no eixo X do buffer, que vira Y na rotação)
+        # Centraliza horizontalmente no buffer
         x_pos = (self.width - rw) // 2
         self.buffer.paste(rotated, (x_pos, y_pos), rotated)
+
+    def draw_line(self, y_pos, margin=10, fill=(100, 100, 100)):
+        draw = ImageDraw.Draw(self.buffer)
+        draw.line((margin, y_pos, self.width - margin, y_pos), fill=fill)
+
+    def draw_image(self, image_input, position, size=None):
+        """
+        image_input: Pode ser um caminho (str) ou um objeto Image da PIL.
+        position: (x, y)
+        size: (w, h) opcional para redimensionar.
+        """
+        try:
+            if isinstance(image_input, str):
+                img = Image.open(image_input).convert("RGBA")
+            else:
+                img = image_input.convert("RGBA")
+            
+            if size:
+                img = img.resize(size, Image.Resampling.LANCZOS)
+            
+            # Se for centralizar horizontalmente (passando x como -1)
+            x, y = position
+            if x == -1:
+                x = (self.width - img.width) // 2
+            
+            self.buffer.paste(img, (x, y), img)
+        except Exception as e:
+            print(f"Erro ao desenhar imagem: {e}")
 
     def draw_progress_bar(self, progress, y_pos, height=4, color=(29, 185, 84)):
         # progress: 0.0 a 1.0
