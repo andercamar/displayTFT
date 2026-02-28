@@ -4,7 +4,7 @@ import io
 from datetime import datetime
 from PIL import Image
 from display_driver import DisplayDriver
-from services import WeatherService, SpotifyService, PrinterService
+from services import WeatherService, SpotifyService, PrinterService, SystemService
 from app_config import Config
 
 class DashboardApp:
@@ -13,6 +13,7 @@ class DashboardApp:
         self.weather_service = WeatherService()
         self.spotify_service = SpotifyService()
         self.printer_service = PrinterService()
+        self.system_service = SystemService()
         self.last_weather_update = 0
         self.weather_data = None
         self.font_path = 'fonts/Arial.ttf'
@@ -180,8 +181,36 @@ class DashboardApp:
 
         self.display.display()
 
+    def render_system(self):
+        stats = self.system_service.get_stats()
+        if not stats: return
+        
+        self.display.clear((20, 20, 20)) # Fundo grafite escuro
+        
+        # Título
+        self.display.draw_text_centered("RASPBERRY PI", 10, self.font_path, 12, fill=(200, 30, 60))
+        self.display.draw_line(28, margin=15, fill=(200, 30, 60))
+        
+        # Temperatura CPU (Destaque Central)
+        temp = stats['temp']
+        temp_color = (0, 255, 0) if temp < 55 else (255, 165, 0)
+        if temp > 70: temp_color = (255, 0, 0)
+        
+        self.display.draw_text_centered(f"{int(temp)}°C", 45, self.font_path, 40, fill=temp_color)
+        self.display.draw_text_centered("CPU TEMP", 85, self.font_path, 10, fill=(100, 100, 100))
+        
+        # Uso de RAM
+        ram_pct = stats['ram_usage']
+        self.display.draw_text_centered(f"RAM: {int(ram_pct)}%", 108, self.font_path, 11, fill=(255, 255, 255))
+        self.display.draw_progress_bar(ram_pct/100, 122, height=4, color=(0, 150, 255))
+        
+        # Carga do Sistema
+        self.display.draw_text_centered(f"LOAD: {int(stats['cpu'])}%", 138, self.font_path, 9, fill=(130, 130, 130))
+        
+        self.display.display()
+
     def run(self):
-        print("Iniciando Dashboard Portrait com Status de Impressora...")
+        print("Iniciando Dashboard Portrait com Monitoramento de Sistema...")
         try:
             while True:
                 # 1. Relógio (10 segundos)
@@ -203,7 +232,12 @@ class DashboardApp:
                         self.render_printer(printer)
                         time.sleep(1)
 
-                # 4. Clima (5 segundos)
+                # 4. Monitor de Sistema (Raspberry Pi)
+                for _ in range(5):
+                    self.render_system()
+                    time.sleep(1)
+
+                # 5. Clima (5 segundos)
                 self.update_weather()
                 self.render_weather()
                 time.sleep(5)

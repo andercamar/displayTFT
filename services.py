@@ -1,5 +1,33 @@
 import requests
+import os
+import psutil
 from app_config import Config
+
+class SystemService:
+    def __init__(self):
+        pass
+
+    def get_stats(self):
+        try:
+            # Temperatura da CPU (Linux padrão)
+            temp = 0
+            if os.path.exists("/sys/class/thermal/thermal_zone0/temp"):
+                with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
+                    temp = int(f.read()) / 1000
+            
+            # Uso de CPU e RAM
+            cpu_usage = psutil.cpu_percent(interval=None)
+            ram = psutil.virtual_memory()
+            
+            return {
+                "temp": temp,
+                "cpu": cpu_usage,
+                "ram_usage": ram.percent,
+                "ram_free_gb": ram.available / (1024 * 1024 * 1024)
+            }
+        except Exception as e:
+            print(f"Erro SystemService: {e}")
+            return None
 
 class WeatherService:
     def __init__(self):

@@ -4,3 +4,4 @@ python-dotenv
 RPi.GPIO
 adafruit-blinka
 adafruit-circuitpython-rgb-display
+psutil
