@@ -19,12 +19,18 @@ class WeatherService:
             
             temp = json_resp['main']['temp']
             feels = json_resp['main']['feels_like']
+            temp_min = json_resp['main'].get('temp_min', temp)
+            temp_max = json_resp['main'].get('temp_max', temp)
+            humidity = json_resp['main'].get('humidity', 0)
             weather = json_resp['weather'][0]['description']
             icon_id = json_resp['weather'][0]['icon']
             
             return {
                 "temp": temp,
                 "feels": feels,
+                "temp_min": temp_min,
+                "temp_max": temp_max,
+                "humidity": humidity,
                 "weather": weather,
                 "icon_id": icon_id
             }
@@ -122,33 +128,38 @@ class PrinterService:
             
         try:
             # Endpoint do Moonraker para K1 Max / Klipper
-            link = f"{self.url}/printer/objects/query?print_stats&display_status"
+            # Adicionando extruder e heater_bed para pegar temperaturas
+            link = f"{self.url}/printer/objects/query?print_stats&display_status&extruder&heater_bed"
             response = requests.get(link, timeout=3)
             
             if response.status_code == 200:
                 data = response.json()['result']['status']
                 print_stats = data.get('print_stats', {})
                 display_status = data.get('display_status', {})
+                extruder = data.get('extruder', {})
+                heater_bed = data.get('heater_bed', {})
                 
-                state = print_stats.get('state') # "printing", "paused", "standby", "complete"
+                state = print_stats.get('state', 'standby') # "printing", "paused", "standby", "complete", "error"
                 
-                if state in ["printing", "paused"]:
-                    progress = display_status.get('progress', 0)
-                    duration = print_stats.get('print_duration', 0)
-                    
-                    # Calcular tempo restante estimado
-                    if progress > 0:
-                        total_est_time = duration / progress
-                        remaining = total_est_time - duration
-                        time_left_str = f"{int(remaining // 60)}m"
-                    else:
-                        time_left_str = "Calc..."
+                res = {
+                    "state": state.capitalize(),
+                    "temp_extruder": extruder.get('temperature', 0),
+                    "temp_bed": heater_bed.get('temperature', 0),
+                    "progress": display_status.get('progress', 0),
+                    "filename": print_stats.get('filename', "")
+                }
 
-                    return {
-                        "state": state.capitalize(),
-                        "progress": progress,
-                        "time_left": time_left_str
-                    }
+                if state in ["printing", "paused"]:
+                    duration = print_stats.get('print_duration', 0)
+                    # Calcular tempo restante estimado
+                    if res['progress'] > 0:
+                        total_est_time = duration / res['progress']
+                        remaining = total_est_time - duration
+                        res["time_left"] = f"{int(remaining // 60)}m"
+                    else:
+                        res["time_left"] = "Calc..."
+                
+                return res
             return None
         except Exception:
             return None
