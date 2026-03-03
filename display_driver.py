@@ -82,8 +82,7 @@ class DisplayDriver:
             return ImageFont.load_default()
 
     def draw_text_centered(self, text, y_pos, font_path, font_size, fill=(255, 255, 255), rotation=0):
-        # Aumenta o tamanho da fonte solicitado em 2 pontos para compensar telas pequenas
-        font = self._get_font(font_path, font_size + 2)
+        font = self._get_font(font_path, font_size)
         draw = ImageDraw.Draw(self.buffer)
         
         # Cálculo de centralização compatível com Pillow moderno
