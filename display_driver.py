@@ -98,7 +98,7 @@ class DisplayDriver:
         else:
             draw.text((x_pos, y_pos), text, font=font, fill=fill)
 
-    def draw_line(self, y_pos, margin=10, fill=(100, 100, 100)):
+    def draw_line(self, y_pos, margin=10, fill=(180, 180, 180)):
         draw = ImageDraw.Draw(self.buffer)
         draw.line((margin, y_pos, self.width - margin, y_pos), fill=fill)
 
@@ -127,7 +127,7 @@ class DisplayDriver:
         fill_width = int(bar_width * progress)
         
         # Fundo da barra
-        draw.rectangle([10, y_pos, self.width-10, y_pos+height], fill=(50, 50, 50))
+        draw.rectangle([10, y_pos, self.width-10, y_pos+height], fill=(100, 100, 100))
         # Progresso
         if fill_width > 0:
             draw.rectangle([10, y_pos, 10+fill_width, y_pos+height], fill=color)

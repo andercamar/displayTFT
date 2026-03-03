@@ -74,15 +74,15 @@ class DashboardApp:
         self.display.draw_text_centered(time_str, 42, self.font_path, 38, fill=(255, 255, 255))
         
         # Dia em Inglês
-        self.display.draw_text_centered(day_str_en, 88, self.font_path, 9, fill=(100, 100, 100))
+        self.display.draw_text_centered(day_str_en, 88, self.font_path, 9, fill=(180, 180, 180))
         
-        self.display.draw_line(108, margin=20, fill=(60, 60, 60))
+        self.display.draw_line(108, margin=20, fill=(100, 100, 100))
         
         # Data no rodapé
-        self.display.draw_text_centered(date_str, 120, self.font_path, 14, fill=(150, 150, 150))
+        self.display.draw_text_centered(date_str, 120, self.font_path, 14, fill=(210, 210, 210))
 
         # Barra Pulsante
-        pulse_color = (0, 255, 0) if int(now.strftime('%S')) % 2 == 0 else (0, 80, 0)
+        pulse_color = (0, 255, 0) if int(now.strftime('%S')) % 2 == 0 else (0, 150, 0)
         self.display.draw_line(150, margin=45, fill=pulse_color)
         
         self.display.display()
@@ -108,10 +108,10 @@ class DashboardApp:
         
         self.display.draw_text_centered(desc, 85, self.font_path, 9, fill=(255, 255, 255))
         
-        self.display.draw_line(105, margin=20, fill=(40, 40, 40))
+        self.display.draw_line(105, margin=20, fill=(100, 100, 100))
         
-        self.display.draw_text_centered(f"SENSAÇÃO: {feels}°C", 118, self.font_path, 10, fill=(130, 130, 130))
-        self.display.draw_text_centered(f"UMIDADE: {humi}%", 135, self.font_path, 10, fill=(130, 130, 130))
+        self.display.draw_text_centered(f"SENSAÇÃO: {feels}°C", 118, self.font_path, 10, fill=(190, 190, 190))
+        self.display.draw_text_centered(f"UMIDADE: {humi}%", 135, self.font_path, 10, fill=(190, 190, 190))
         
         self.display.display()
 
@@ -133,12 +133,12 @@ class DashboardApp:
         
         artist_name = spotify['artists']
         if len(artist_name) > 22: artist_name = artist_name[:20] + ".."
-        self.display.draw_text_centered(artist_name, 90, self.font_path, 10, fill=(160, 160, 160))
+        self.display.draw_text_centered(artist_name, 90, self.font_path, 10, fill=(220, 220, 220))
         
         self.display.draw_progress_bar(0.65, 120, height=3, color=(30, 215, 96))
         
         status_text = "REPRODUZINDO" if spotify.get('playing') else "PAUSADO"
-        self.display.draw_text_centered(status_text, 140, self.font_path, 8, fill=(80, 80, 80))
+        self.display.draw_text_centered(status_text, 140, self.font_path, 8, fill=(160, 160, 160))
         
         self.display.display()
 
@@ -161,7 +161,7 @@ class DashboardApp:
             
             # Tempo restante ou Status
             info_text = f"RESTAM: {printer.get('time_left', '...')}"
-            self.display.draw_text_centered(info_text, 125, self.font_path, 12, fill=(180, 180, 180))
+            self.display.draw_text_centered(info_text, 125, self.font_path, 12, fill=(230, 230, 230))
         else:
             # --- TELA IDLE (CRIATIVA) ---
             # Status Principal
@@ -169,7 +169,7 @@ class DashboardApp:
             self.display.draw_text_centered(state, 45, self.font_path, 22, fill=status_color)
             
             # Temperaturas com pequenos separadores
-            self.display.draw_text_centered("TEMPERATURAS", 85, self.font_path, 10, fill=(100, 100, 100))
+            self.display.draw_text_centered("TEMPERATURAS", 85, self.font_path, 10, fill=(180, 180, 180))
             
             # Bico (Extruder)
             temp_ext = int(printer.get('temp_extruder', 0))
@@ -197,7 +197,7 @@ class DashboardApp:
         if temp > 70: temp_color = (255, 0, 0)
         
         self.display.draw_text_centered(f"{int(temp)}°C", 45, self.font_path, 40, fill=temp_color)
-        self.display.draw_text_centered("CPU TEMP", 85, self.font_path, 10, fill=(100, 100, 100))
+        self.display.draw_text_centered("CPU TEMP", 85, self.font_path, 10, fill=(180, 180, 180))
         
         # Uso de RAM
         ram_pct = stats['ram_usage']
@@ -205,7 +205,7 @@ class DashboardApp:
         self.display.draw_progress_bar(ram_pct/100, 122, height=4, color=(0, 150, 255))
         
         # Carga do Sistema
-        self.display.draw_text_centered(f"LOAD: {int(stats['cpu'])}%", 138, self.font_path, 9, fill=(130, 130, 130))
+        self.display.draw_text_centered(f"LOAD: {int(stats['cpu'])}%", 138, self.font_path, 9, fill=(190, 190, 190))
         
         self.display.display()
 

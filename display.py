@@ -125,7 +125,7 @@ def showSpotify(disp):
 def teste(disp):
     clearDisplay(disp)
     draw = disp.draw()
-    draw.line((100,200,150,300), fill=128)
+    draw.line((100,200,150,300), fill=200)
     disp.display()
 
 def main():
