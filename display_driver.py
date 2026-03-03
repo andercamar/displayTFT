@@ -61,16 +61,18 @@ class DisplayDriver:
     def _get_font(self, font_path, font_size):
         """Tenta carregar a fonte solicitada ou busca uma alternativa no sistema."""
         try:
-            if os.path.exists(font_path):
-                return ImageFont.truetype(font_path, font_size)
-            
-            # Alternativas comuns no Raspberry Pi OS
+            # Prioriza fontes em negrito do sistema Raspberry Pi OS
             system_fonts = [
                 "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-                "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-                "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
-                "Arial.ttf"
+                "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+                "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf",
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
             ]
+            
+            # Se um caminho específico for passado e existir, usa ele
+            if font_path and os.path.exists(font_path):
+                return ImageFont.truetype(font_path, font_size)
+            
             for sf in system_fonts:
                 if os.path.exists(sf):
                     return ImageFont.truetype(sf, font_size)
@@ -80,7 +82,8 @@ class DisplayDriver:
             return ImageFont.load_default()
 
     def draw_text_centered(self, text, y_pos, font_path, font_size, fill=(255, 255, 255), rotation=0):
-        font = self._get_font(font_path, font_size)
+        # Aumenta o tamanho da fonte solicitado em 2 pontos para compensar telas pequenas
+        font = self._get_font(font_path, font_size + 2)
         draw = ImageDraw.Draw(self.buffer)
         
         # Cálculo de centralização compatível com Pillow moderno
@@ -98,7 +101,7 @@ class DisplayDriver:
         else:
             draw.text((x_pos, y_pos), text, font=font, fill=fill)
 
-    def draw_line(self, y_pos, margin=10, fill=(180, 180, 180)):
+    def draw_line(self, y_pos, margin=10, fill=(255, 255, 255)):
         draw = ImageDraw.Draw(self.buffer)
         draw.line((margin, y_pos, self.width - margin, y_pos), fill=fill)
 
