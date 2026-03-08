@@ -16,7 +16,7 @@ class DashboardApp:
         self.system_service = SystemService()
         self.last_weather_update = 0
         self.weather_data = None
-        self.font_path = 'fonts/Arial.ttf'
+        self.font_path = 'fonts/FSEX300.ttf'
         self.weather_icon_cache = {}
 
     def get_weather_icon(self, icon_id):
