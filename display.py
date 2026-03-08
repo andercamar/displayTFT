@@ -89,8 +89,8 @@ def drawRotatedText(image,text,position,angle,font,fill=(255,255,255)):
     image.paste(rotated,position,rotated)
 
 def showDate(disp):
-    font1=ImageFont.truetype('fonts/FSEX300.ttf',15)
-    font2=ImageFont.truetype('fonts/FSEX300.ttf',30)
+    font1=ImageFont.truetype('fonts/FSEX300.ttf',18)
+    font2=ImageFont.truetype('fonts/FSEX300.ttf',40)
     for x in range(5):
         now = getDate()
         clearDisplay(disp)
@@ -103,19 +103,19 @@ def showDate(disp):
 def showWeather(disp):
     clearDisplay(disp)
     weather = getWeather()
-    font=ImageFont.truetype('fonts/FSEX300.ttf',15)
-    drawRotatedText(disp.buffer,"Temperatura:",(100,40),270,font,fill=(255,255,255))
-    drawRotatedText(disp.buffer,str(weather['weather']),(30,40),270,font,fill=(255,255,255))
-    font=ImageFont.truetype('fonts/FSEX300.ttf',30)
-    drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(60,30),270,font,fill=(255,255,255))
+    font_small=ImageFont.truetype('fonts/FSEX300.ttf',18)
+    font_big=ImageFont.truetype('fonts/FSEX300.ttf',40)
+    drawRotatedText(disp.buffer,"Temperatura:",(100,40),270,font_small,fill=(255,255,255))
+    drawRotatedText(disp.buffer,str(weather['weather']),(30,40),270,font_small,fill=(255,255,255))
+    drawRotatedText(disp.buffer,str(weather['temp'])+"°C",(60,30),270,font_big,fill=(255,255,255))
     disp.display()
 
 def showSpotify(disp):
     spotify = getSpotify()
     if spotify:
         clearDisplay(disp)
-        font1=ImageFont.truetype('fonts/FSEX300.ttf',15)
-        font2=ImageFont.truetype('fonts/FSEX300.ttf',20)
+        font1=ImageFont.truetype('fonts/FSEX300.ttf',18)
+        font2=ImageFont.truetype('fonts/FSEX300.ttf',24)
         for x in range(160,0,-5):
             clearDisplay(disp)
             drawRotatedText(disp.buffer,str(spotify['artists']),(100,10),270,font1,fill=(255,255,255))
