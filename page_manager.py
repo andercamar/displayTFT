@@ -23,15 +23,21 @@ class PageManager:
         """Prepara o início da transição para a próxima página."""
         if self.is_transitioning: return
 
+        # Encontra a próxima página válida
+        next_idx = (self.current_index + 1) % len(self.pages)
+        start_index = next_idx
+        while not self.pages[next_idx].should_show():
+            next_idx = (next_idx + 1) % len(self.pages)
+            if next_idx == start_index: break
+        
+        # Se a próxima página for a mesma que a atual, não faz transição
+        if next_idx == self.current_index:
+            self.last_switch_time = time.time()
+            return
+
         # Salva o buffer atual como 'antigo'
         self.old_buffer = self.display.buffer.copy()
-        
-        # Encontra a próxima página válida
-        self.next_index = (self.current_index + 1) % len(self.pages)
-        start_index = self.next_index
-        while not self.pages[self.next_index].should_show():
-            self.next_index = (self.next_index + 1) % len(self.pages)
-            if self.next_index == start_index: break
+        self.next_index = next_idx
             
         # Inicia a transição
         self.is_transitioning = True

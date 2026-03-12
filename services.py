@@ -11,8 +11,8 @@ class SystemService:
         self.cache = None
 
     def get_stats(self):
-        # Throttle: Atualiza a cada 2 segundos
-        if self.cache and time.time() - self.last_update < 2:
+        now = time.time()
+        if self.cache and now - self.last_update < 2:
             return self.cache
 
         try:
@@ -31,11 +31,11 @@ class SystemService:
                 "ram_free_gb": ram.available / (1024 * 1024 * 1024),
                 "ip": self.get_ip()
             }
-            self.last_update = time.time()
-            return self.cache
         except Exception as e:
             print(f"Erro SystemService: {e}")
-            return self.cache
+        
+        self.last_update = now
+        return self.cache
 
     def get_ip(self):
         import socket
@@ -57,31 +57,32 @@ class WeatherService:
         self.cache = None
 
     def get_weather(self):
-        # Throttle: Atualiza a cada 10 minutos (OpenWeather free limit)
-        if self.cache and time.time() - self.last_update < 600:
+        now = time.time()
+        # Se falhou ou teve erro, espera pelo menos 60 segundos antes de tentar de novo
+        # Se teve sucesso, espera 10 minutos
+        cooldown = 600 if self.cache else 60
+        if now - self.last_update < cooldown:
             return self.cache
 
+        self.last_update = now # Marca o tempo ANTES da chamada para evitar loops se demorar
+
         if not self.api_key:
-            return {"temp": "N/A", "feels": "N/A", "weather": "API Key Faltando"}
+            return None
         
         try:
             link = f'https://api.openweathermap.org/data/2.5/weather?lat={self.lat}&lon={self.long}&appid={self.api_key}&lang=pt_br&units=metric'
-            response = requests.get(link, timeout=10)
+            response = requests.get(link, timeout=5)
             response.raise_for_status()
-            self.cache = response.json()
+            data = response.json()
             
-            # Formata o retorno
-            temp = self.cache['main']['temp']
-            res = {
-                "temp": temp,
-                "feels": self.cache['main']['feels_like'],
-                "humidity": self.cache['main'].get('humidity', 0),
-                "weather": self.cache['weather'][0]['description'],
-                "icon_id": self.cache['weather'][0]['icon']
+            self.cache = {
+                "temp": data['main']['temp'],
+                "feels": data['main']['feels_like'],
+                "humidity": data['main'].get('humidity', 0),
+                "weather": data['weather'][0]['description'],
+                "icon_id": data['weather'][0]['icon']
             }
-            self.cache = res
-            self.last_update = time.time()
-            return res
+            return self.cache
         except Exception as e:
             print(f"Erro ao buscar clima: {e}")
             return self.cache
@@ -96,49 +97,45 @@ class SpotifyService:
         self.cache = None
 
     def refresh_access_token(self):
-        if not self.refresh_token or not self.client_id or not self.client_secret:
-            return False
+        if not self.refresh_token: return False
         url = "https://accounts.spotify.com/api/token"
         auth_header = base64.b64encode(f"{self.client_id}:{self.client_secret}".encode()).decode()
         payload = {"grant_type": "refresh_token", "refresh_token": self.refresh_token}
         headers = {"Authorization": f"Basic {auth_header}", "Content-Type": "application/x-www-form-urlencoded"}
         try:
-            response = requests.post(url, data=payload, headers=headers)
+            response = requests.post(url, data=payload, headers=headers, timeout=5)
             if response.status_code == 200:
                 self.token = response.json().get('access_token')
                 return True
-            return False
-        except: return False
+        except: pass
+        return False
 
     def get_playing(self):
-        # Throttle: Atualiza a cada 3 segundos
-        if self.cache is not None and time.time() - self.last_update < 3:
+        now = time.time()
+        if now - self.last_update < 3:
             return self.cache
 
+        self.last_update = now
         if not self.token and not self.refresh_access_token():
             return None
         
-        link = "https://api.spotify.com/v1/me/player/currently-playing"
         try:
-            response = requests.get(link, headers={"Authorization": f"Bearer {self.token}"}, timeout=5)
+            response = requests.get("https://api.spotify.com/v1/me/player/currently-playing", 
+                                    headers={"Authorization": f"Bearer {self.token}"}, timeout=3)
             if response.status_code == 401 and self.refresh_access_token():
                 return self.get_playing()
 
             if response.status_code == 200:
                 json_resp = response.json()
-                if not json_resp.get('item'):
-                    self.cache = None
-                else:
+                if json_resp.get('item'):
                     artists = [artist['name'] for artist in json_resp['item']['artists']]
                     self.cache = {
                         "artists": ', '.join(artists),
                         "music": json_resp['item']['name'],
                         "playing": json_resp['is_playing']
                     }
-            else:
-                self.cache = None
-            
-            self.last_update = time.time()
+                else: self.cache = None
+            else: self.cache = None
             return self.cache
         except:
             return self.cache
@@ -150,14 +147,15 @@ class PrinterService:
         self.cache = None
 
     def get_status(self):
-        # Throttle: Atualiza a cada 2 segundos
-        if self.cache and time.time() - self.last_update < 2:
+        now = time.time()
+        if self.cache and now - self.last_update < 2:
             return self.cache
 
+        self.last_update = now
         if not self.url: return None
         try:
             link = f"{self.url}/printer/objects/query?print_stats&display_status&extruder&heater_bed"
-            response = requests.get(link, timeout=3)
+            response = requests.get(link, timeout=2)
             if response.status_code == 200:
                 data = response.json()['result']['status']
                 print_stats = data.get('print_stats', {})
@@ -175,7 +173,6 @@ class PrinterService:
                         res["time_left"] = f"{int(remaining // 60)}m"
                     else: res["time_left"] = "..."
                 self.cache = res
-                self.last_update = time.time()
                 return res
             return self.cache
         except: return self.cache
