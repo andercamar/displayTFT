@@ -31,12 +31,7 @@ class StatusBar:
         ip_text = self.stats.get('ip', '0.0.0.0')
         self.display.draw_text_absolute(ip_text, (14, 2), self.font_path, 10, fill=(180, 180, 180))
         
-        # CPU Temp no meio (com cor dinâmica)
-        temp = self.stats.get('temp', 0)
-        t_color = (100, 255, 100) if temp < 55 else (255, 150, 0)
-        self.display.draw_text_absolute(f"{int(temp)}°C", (74, 2), self.font_path, 10, fill=t_color)
-        
-        # Status da Impressora (Círculo colorido)
+        # Status da Impressora (Círculo colorido no canto direito)
         p_color = (100, 100, 100) # Cinza (Desconectado)
         if self.printer_status:
             state = self.printer_status.get('state', '').lower()
