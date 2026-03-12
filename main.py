@@ -86,12 +86,8 @@ class DashboardApp:
                 else:
                     self.display.disp.image(final_frame)
                 
-                # Controle de FPS: 
-                # Se estiver transicionando, dorme menos para o fade ser fluido
-                if self.manager.is_transitioning:
-                    time.sleep(0.05) # ~20 FPS durante o fade
-                else:
-                    time.sleep(1) # 1 FPS normal para economizar CPU
+                # Loop rápido para fluidez de animações e piscar (10 FPS)
+                time.sleep(0.1)
                 
         except KeyboardInterrupt:
             print("\nEncerrando dashboard.")

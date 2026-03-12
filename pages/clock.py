@@ -1,10 +1,10 @@
+import time
 from datetime import datetime
 from pages.base import BasePage
 
 class ClockPage(BasePage):
     def __init__(self, display, font_path='fonts/FSEX300.ttf'):
         super().__init__(display, font_path)
-        self.pulse_state = True
 
     def render(self):
         now = datetime.now()
@@ -34,10 +34,11 @@ class ClockPage(BasePage):
         # Data
         self.display.draw_text_centered(date_str, 118, self.font_path, 18, fill=(255, 255, 255))
 
-        # Barra Pulsante (Pisca entre Verde e Preto)
-        pulse_color = (0, 255, 0) if self.pulse_state else (0, 0, 0)
+        # Barra Pulsante (Pisca a cada 0.5s usando tempo real)
+        # Se os milissegundos estiverem entre 0-500, liga. 500-1000, desliga.
+        is_on = int(time.time() * 2) % 2 == 0
+        pulse_color = (0, 255, 0) if is_on else (0, 0, 0)
         self.display.draw_line(145, margin=45, fill=pulse_color)
-        self.pulse_state = not self.pulse_state
 
     def get_duration(self):
         return 10
