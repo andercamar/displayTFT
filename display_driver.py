@@ -57,6 +57,25 @@ class DisplayDriver:
             # Envia o buffer Pillow diretamente para o display
             self.disp.image(self.buffer)
 
+    def apply_night_mode(self, dim_factor=0.3, red_tint=True):
+        """Reduz o brilho do buffer e opcionalmente aplica um filtro avermelhado."""
+        # Se for 1.0 (brilho total), não faz nada
+        if dim_factor >= 1.0 and not red_tint:
+            return
+
+        # Multiplica cada canal pelo fator de brilho
+        # Se red_tint for True, reduz mais os canais Verde e Azul
+        r_mult = dim_factor
+        g_mult = dim_factor * 0.5 if red_tint else dim_factor
+        b_mult = dim_factor * 0.4 if red_tint else dim_factor
+        
+        matrix = (
+            r_mult, 0, 0, 0,
+            0, g_mult, 0, 0,
+            0, 0, b_mult, 0
+        )
+        self.buffer = self.buffer.convert("RGB", matrix)
+
     def _get_font(self, font_path, font_size):
         """Tenta carregar a fonte solicitada ou busca uma alternativa no sistema."""
         try:

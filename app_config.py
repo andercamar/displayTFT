@@ -31,3 +31,9 @@ class Config:
     TFT_SPI_PORT = 0
     TFT_SPI_DEVICE = 0
     TFT_SPEED_HZ = 4000000
+
+    # Modo Noturno
+    NIGHT_MODE_START = os.getenv("NIGHT_MODE_START", "19:45")
+    NIGHT_MODE_END = os.getenv("NIGHT_MODE_END", "06:00")
+    NIGHT_MODE_DIM = float(os.getenv("NIGHT_MODE_DIM", 0.3)) # 30% do brilho
+    NIGHT_MODE_RED_TINT = True # Filtro de luz azul (mais avermelhado)
