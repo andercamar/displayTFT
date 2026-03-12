@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class StatusBar:
     def __init__(self, display, system_service, printer_service, font_path='fonts/FSEX300.ttf'):
         self.display = display
@@ -20,9 +22,14 @@ class StatusBar:
         # Fundo da Barra de Status
         self.display.draw_rectangle([0, 0, self.display.width, 15], fill=(20, 20, 20))
         
-        # IP no canto esquerdo
+        # Indicador de Sistema Online (Bolinha Verde que pisca)
+        is_on = (datetime.now().second % 2) == 0
+        dot_color = (0, 255, 0) if is_on else (0, 80, 0)
+        self.display.draw_circle((6, 7), 2, fill=dot_color)
+        
+        # IP no canto esquerdo (deslocado para x=14 para dar espaço para a bolinha)
         ip_text = self.stats.get('ip', '0.0.0.0')
-        self.display.draw_text_absolute(ip_text, (4, 2), self.font_path, 10, fill=(180, 180, 180))
+        self.display.draw_text_absolute(ip_text, (14, 2), self.font_path, 10, fill=(180, 180, 180))
         
         # CPU Temp no meio (com cor dinâmica)
         temp = self.stats.get('temp', 0)

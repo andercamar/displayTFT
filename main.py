@@ -67,14 +67,13 @@ class DashboardApp:
                 # O loop principal agora SÓ DESENHA
                 self.display.clear()
 
-                # 1. Gerencia trocas de página e transições (apenas lógica de buffer)
+                # 1. Gerencia trocas de página
                 self.manager.update()
                 
-                # 2. Renderiza a página atual se não estiver em transição
-                if not self.manager.is_transitioning:
-                    current_page = self.manager.get_current_page()
-                    if current_page:
-                        current_page.render()
+                # 2. Renderiza a página atual diretamente (transição removida para nitidez)
+                current_page = self.manager.get_current_page()
+                if current_page:
+                    current_page.render()
                 
                 # 3. Renderiza a Barra de Status
                 self.status_bar.render()
@@ -108,13 +107,8 @@ class DashboardApp:
                 else:
                     self.display.disp.image(final_frame)
                 
-                # Loop adaptativo para fluidez apenas quando necessário:
-                # Se estiver transicionando (Fade), dorme menos para ser suave (0.1s).
-                # Se a tela estiver parada, dorme 1 segundo para poupar recursos/debug.
-                if self.manager.is_transitioning:
-                    time.sleep(0.1)
-                else:
-                    time.sleep(1.0)
+                # Loop cravado em 1 segundo (1 FPS) para máxima nitidez e economia de energia
+                time.sleep(1.0)
                 
         except KeyboardInterrupt:
             self.running = False
