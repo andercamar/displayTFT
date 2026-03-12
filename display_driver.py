@@ -1,9 +1,5 @@
 import os
-import board
-import busio
-import digitalio
 from PIL import Image, ImageDraw, ImageFont
-from adafruit_rgb_display import st7735
 from app_config import Config
 
 class DisplayDriver:
@@ -16,16 +12,20 @@ class DisplayDriver:
         
         if not self.debug:
             try:
+                import board
+                import busio
+                import digitalio
+                from adafruit_rgb_display import st7735
+                
                 # Configuração moderna via Blinka (CircuitPython para Linux)
                 spi = board.SPI()
                 
                 # Pinos configurados no app_config.py
-                # O driver st7735 espera pinos DigitalInOut
                 cs_pin = digitalio.DigitalInOut(board.CE0)
                 dc_pin = digitalio.DigitalInOut(getattr(board, f"D{Config.TFT_DC}"))
                 reset_pin = digitalio.DigitalInOut(getattr(board, f"D{Config.TFT_RST}"))
 
-                # Inicializa o display ST7735R (Red Tab) que suporta 128x160
+                # Inicializa o display ST7735R
                 self.disp = st7735.ST7735R(
                     spi, 
                     rotation=0, 
@@ -39,7 +39,6 @@ class DisplayDriver:
                 print(f"Hardware Display (ST7735R) inicializado: {self.width}x{self.height}")
             except Exception as e:
                 print(f"Erro ao inicializar hardware: {e}")
-                print("Certifique-se de que o SPI está ativo e as bibliotecas instaladas.")
                 print("Ativando modo DEBUG/Simulador.")
                 self.debug = True
         
@@ -99,6 +98,20 @@ class DisplayDriver:
             self.buffer.paste(rotated, (x_pos, y_pos), rotated)
         else:
             draw.text((x_pos, y_pos), text, font=font, fill=fill)
+
+    def draw_text_absolute(self, text, position, font_path, font_size, fill=(255, 255, 255)):
+        font = self._get_font(font_path, font_size)
+        draw = ImageDraw.Draw(self.buffer)
+        draw.text(position, text, font=font, fill=fill)
+
+    def draw_rectangle(self, coords, fill=None, outline=None):
+        draw = ImageDraw.Draw(self.buffer)
+        draw.rectangle(coords, fill=fill, outline=outline)
+
+    def draw_circle(self, center, radius, fill=None, outline=None):
+        draw = ImageDraw.Draw(self.buffer)
+        x, y = center
+        draw.ellipse([x-radius, y-radius, x+radius, y+radius], fill=fill, outline=outline)
 
     def draw_line(self, y_pos, margin=10, fill=(255, 255, 255)):
         draw = ImageDraw.Draw(self.buffer)

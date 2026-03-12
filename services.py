@@ -23,11 +23,23 @@ class SystemService:
                 "temp": temp,
                 "cpu": cpu_usage,
                 "ram_usage": ram.percent,
-                "ram_free_gb": ram.available / (1024 * 1024 * 1024)
+                "ram_free_gb": ram.available / (1024 * 1024 * 1024),
+                "ip": self.get_ip()
             }
         except Exception as e:
             print(f"Erro SystemService: {e}")
             return None
+
+    def get_ip(self):
+        import socket
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(("8.8.8.8", 80))
+            ip = s.getsockname()[0]
+            s.close()
+            return ip
+        except:
+            return "127.0.0.1"
 
 class WeatherService:
     def __init__(self):
