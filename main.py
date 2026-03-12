@@ -108,8 +108,13 @@ class DashboardApp:
                 else:
                     self.display.disp.image(final_frame)
                 
-                # Loop a 10 FPS constantes. NADA bloqueia este tempo.
-                time.sleep(0.1)
+                # Loop adaptativo para fluidez apenas quando necessário:
+                # Se estiver transicionando (Fade), dorme menos para ser suave (0.1s).
+                # Se a tela estiver parada, dorme 1 segundo para poupar recursos/debug.
+                if self.manager.is_transitioning:
+                    time.sleep(0.1)
+                else:
+                    time.sleep(1.0)
                 
         except KeyboardInterrupt:
             self.running = False

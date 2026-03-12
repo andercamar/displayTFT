@@ -34,8 +34,8 @@ class ClockPage(BasePage):
         # Data
         self.display.draw_text_centered(date_str, 118, self.font_path, 18, fill=(255, 255, 255))
 
-        # Barra Pulsante (2Hz: muda estado a cada 0.5s)
-        is_on = (int(time.time() * 2) % 2) == 0
+        # Barra Pulsante (1Hz: 1s brilhante, 1s escuro)
+        is_on = (now.second % 2) == 0
         pulse_color = (0, 255, 0) if is_on else (0, 100, 0)
         self.display.draw_line(145, margin=45, fill=pulse_color)
 
