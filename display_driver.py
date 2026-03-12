@@ -57,14 +57,15 @@ class DisplayDriver:
             # Envia o buffer Pillow diretamente para o display
             self.disp.image(self.buffer)
 
-    def apply_night_mode(self, dim_factor=0.3, red_tint=True):
+    def apply_night_mode(self, dim_factor=0.5, red_tint=True):
         """Aplica filtro noturno no buffer e RETORNA a imagem processada sem alterar o original."""
         if dim_factor >= 1.0 and not red_tint:
             return self.buffer
 
+        # Se red_tint for True, reduz menos agressivamente os canais Verde e Azul
         r_mult = dim_factor
-        g_mult = dim_factor * 0.5 if red_tint else dim_factor
-        b_mult = dim_factor * 0.4 if red_tint else dim_factor
+        g_mult = dim_factor * 0.8 if red_tint else dim_factor
+        b_mult = dim_factor * 0.7 if red_tint else dim_factor
         
         matrix = (
             r_mult, 0, 0, 0,
