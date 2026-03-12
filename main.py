@@ -1,4 +1,5 @@
 import time
+import os
 from datetime import datetime
 from app_config import Config
 from display_driver import DisplayDriver
@@ -56,7 +57,9 @@ class DashboardApp:
                 self.status_bar.render()
                 
                 # 4. Modo Noturno Automático
-                # Converter horários HH:MM para minutos totais do dia para precisão
+                # Prepara o frame final (seja o original ou o escurecido)
+                final_frame = self.display.buffer
+
                 def get_day_minutes(hh_mm_str):
                     h, m = map(int, hh_mm_str.split(':'))
                     return h * 60 + m
@@ -67,16 +70,21 @@ class DashboardApp:
                 end_min = get_day_minutes(Config.NIGHT_MODE_END)
 
                 in_night_window = False
-                if start_min > end_min: # Janela cruza meia-noite (ex: 19:45 até 06:00)
+                if start_min > end_min: # Janela cruza meia-noite
                     in_night_window = now_min >= start_min or now_min < end_min
                 else: # Janela no mesmo dia
                     in_night_window = start_min <= now_min < end_min
                 
                 if in_night_window:
-                    self.display.apply_night_mode(dim_factor=Config.NIGHT_MODE_DIM, red_tint=Config.NIGHT_MODE_RED_TINT)
+                    final_frame = self.display.apply_night_mode(dim_factor=Config.NIGHT_MODE_DIM, red_tint=Config.NIGHT_MODE_RED_TINT)
 
-                # Envia o frame final para o hardware/simulador
-                self.display.display()
+                # 5. Envia o frame final (Original ou Noturno) para o hardware/simulador
+                if self.display.debug:
+                    if not os.path.exists("debug_frames"):
+                        os.makedirs("debug_frames")
+                    final_frame.save("debug_frames/current_frame.png")
+                else:
+                    self.display.disp.image(final_frame)
                 
                 # Controle de FPS: 
                 # Se estiver transicionando, dorme menos para o fade ser fluido
