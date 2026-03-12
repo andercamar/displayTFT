@@ -1,5 +1,6 @@
 import time
 import os
+import threading
 from datetime import datetime
 from app_config import Config
 from display_driver import DisplayDriver
@@ -34,30 +35,51 @@ class DashboardApp:
             WeatherPage(self.display, self.weather_service)
         ]
         
-        # Gerenciador de Páginas (Passando display para gerenciar transições)
+        # Gerenciador de Páginas
         self.manager = PageManager(self.pages, self.display)
+        self.running = True
+
+    def background_task(self):
+        """Thread que busca dados das APIs em segundo plano sem travar a interface."""
+        print("Thread de dados iniciada.")
+        while self.running:
+            try:
+                # Atualiza todos os serviços (que já têm throttling interno)
+                # O manager.update() vai chamar o update() de cada página
+                for page in self.pages:
+                    page.update()
+                self.status_bar.update()
+            except Exception as e:
+                print(f"Erro na thread de dados: {e}")
+            
+            # Espera 2 segundos antes da próxima rodada de rede
+            time.sleep(2)
 
     def run(self):
-        print("Iniciando Dashboard com Transições Suaves...")
+        print("Iniciando Dashboard Multithread (Liso FPS)...")
+        
+        # Inicia a busca de dados em paralelo
+        bg_thread = threading.Thread(target=self.background_task, daemon=True)
+        bg_thread.start()
+
         try:
             while True:
-                # 1. Atualiza dados e gerencia trocas de página/transições
+                # O loop principal agora SÓ DESENHA
+                self.display.clear()
+
+                # 1. Gerencia trocas de página e transições (apenas lógica de buffer)
                 self.manager.update()
-                self.status_bar.update()
                 
-                # 2. Renderiza a página atual (apenas se não estiver no meio de uma transição)
-                # O PageManager já cuida da renderização durante o Fade
+                # 2. Renderiza a página atual se não estiver em transição
                 if not self.manager.is_transitioning:
                     current_page = self.manager.get_current_page()
                     if current_page:
                         current_page.render()
                 
-                # 3. Sobrepõe a Barra de Status em cada frame
-                # A Barra de Status não participa do Fade para ficar sempre visível
+                # 3. Renderiza a Barra de Status
                 self.status_bar.render()
                 
-                # 4. Modo Noturno Automático
-                # Prepara o frame final (seja o original ou o escurecido)
+                # 4. Modo Noturno Automático (Apenas visual)
                 final_frame = self.display.buffer
 
                 def get_day_minutes(hh_mm_str):
@@ -78,7 +100,7 @@ class DashboardApp:
                 if in_night_window:
                     final_frame = self.display.apply_night_mode(dim_factor=Config.NIGHT_MODE_DIM, red_tint=Config.NIGHT_MODE_RED_TINT)
 
-                # 5. Envia o frame final (Original ou Noturno) para o hardware/simulador
+                # 5. Envia para o display
                 if self.display.debug:
                     if not os.path.exists("debug_frames"):
                         os.makedirs("debug_frames")
@@ -86,10 +108,11 @@ class DashboardApp:
                 else:
                     self.display.disp.image(final_frame)
                 
-                # Loop rápido para fluidez de animações e piscar (10 FPS)
+                # Loop a 10 FPS constantes. NADA bloqueia este tempo.
                 time.sleep(0.1)
                 
         except KeyboardInterrupt:
+            self.running = False
             print("\nEncerrando dashboard.")
 
 if __name__ == "__main__":
